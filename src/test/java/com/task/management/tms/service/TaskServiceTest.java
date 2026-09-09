@@ -21,6 +21,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import static org.mockito.ArgumentMatchers.argThat;
 
 import java.util.List;
 import java.util.Optional;
@@ -471,6 +475,57 @@ public class TaskServiceTest {
         verify(projectRepository).findById(projectId);
     }
 
+    @Test
+    void createTask_shouldSaveAuditWithAuthenticatedUser() {
+
+        TaskCreateDto dto = new TaskCreateDto();
+        dto.setProjectId(1L);
+
+        Project project = new Project();
+        project.setId(1L);
+
+        Task task = new Task();
+
+        Task savedTask = new Task();
+        savedTask.setId(10L);
+
+        TaskResponseDto responseDto = new TaskResponseDto();
+
+        when(projectRepository.findById(1L))
+                .thenReturn(Optional.of(project));
+
+        when(taskMapper.toEntity(dto))
+                .thenReturn(task);
+
+        when(taskRepository.save(task))
+                .thenReturn(savedTask);
+
+        when(taskMapper.toDto(savedTask))
+                .thenReturn(responseDto);
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                        "test@example.com",
+                        null,
+                        List.of()
+                );
+
+        SecurityContextHolder.getContext()
+                .setAuthentication(authentication);
+
+        taskService.createTask(dto);
+
+        verify(auditLogRepository).save(
+                argThat(auditLog ->
+                        auditLog.getIdentityType().equals("TASK")
+                                && auditLog.getIdentityId().equals(10L)
+                                && auditLog.getAction().equals("CREATE")
+                                && auditLog.getUsername().equals("test@example.com")
+                )
+        );
+
+        SecurityContextHolder.clearContext();
+    }
 
     @Test
     void deleteTask_shouldDeleteTask() {

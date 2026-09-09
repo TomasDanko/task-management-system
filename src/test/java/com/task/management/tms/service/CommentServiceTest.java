@@ -14,6 +14,9 @@ import com.task.management.tms.repository.CommentRepository;
 import com.task.management.tms.repository.TaskRepository;
 import com.task.management.tms.repository.UserRepository;
 import com.task.management.tms.service.impl.CommentServiceImpl;
+import com.task.management.tms.entity.AuditLog;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -26,6 +29,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -268,6 +272,59 @@ public class CommentServiceTest {
 
         verify(commentRepository).findByTaskId(taskId);
     }
+
+    @Test
+    void createComment_shouldSaveAuditWithAuthenticatedUser() {
+
+        CommentCreateDto dto = new CommentCreateDto();
+        dto.setTaskId(1L);
+        dto.setAuthorId(2L);
+        dto.setContent("Test comment");
+
+        Task task = new Task();
+        User user = new User();
+        Comment comment = new Comment();
+        Comment savedComment = new Comment();
+
+        savedComment.setId(10L);
+
+        when(taskRepository.findById(1L))
+                .thenReturn(Optional.of(task));
+
+        when(userRepository.findById(2L))
+                .thenReturn(Optional.of(user));
+
+        when(commentMapper.toEntity(dto))
+                .thenReturn(comment);
+
+        when(commentRepository.save(comment))
+                .thenReturn(savedComment);
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                        "test@example.com",
+                        null,
+                        List.of()
+                );
+
+        SecurityContextHolder.getContext()
+                .setAuthentication(authentication);
+
+        commentService.createComment(dto);
+
+        verify(auditLogRepository).save(
+                argThat(auditLog ->
+                        auditLog.getIdentityType().equals("COMMENT")
+                                && auditLog.getIdentityId().equals(10L)
+                                && auditLog.getAction().equals("CREATE")
+                                && auditLog.getUsername().equals("test@example.com")
+                )
+        );
+
+        SecurityContextHolder.clearContext();
+    }
+
+
 
 
     @Test
