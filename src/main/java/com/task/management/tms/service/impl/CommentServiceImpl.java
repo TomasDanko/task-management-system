@@ -16,6 +16,8 @@ import com.task.management.tms.repository.CommentRepository;
 import com.task.management.tms.repository.TaskRepository;
 import com.task.management.tms.repository.UserRepository;
 import com.task.management.tms.service.CommentService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,11 +95,20 @@ public class CommentServiceImpl implements CommentService {
     private void saveAudit(AuditAction action, String identityType, Long identityId) {
 
         AuditLog log = new AuditLog();
+
         log.setIdentityType(identityType);
         log.setIdentityId(identityId);
         log.setAction(action.name());
         log.setTimestamp(LocalDateTime.now());
-        log.setUsername("system");
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            log.setUsername(authentication.getName());
+        } else {
+            log.setUsername("system");
+        }
 
         auditLogRepository.save(log);
     }

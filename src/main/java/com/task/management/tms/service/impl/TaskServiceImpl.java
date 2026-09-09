@@ -18,6 +18,8 @@ import com.task.management.tms.repository.TaskRepository;
 import com.task.management.tms.repository.UserRepository;
 import com.task.management.tms.service.TaskService;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -155,22 +157,24 @@ public class TaskServiceImpl implements TaskService {
                            String identityType,
                            Long identityId) {
 
-
         AuditLog log = new AuditLog();
-
 
         log.setIdentityType(identityType);
         log.setIdentityId(identityId);
         log.setAction(action.name());
         log.setTimestamp(LocalDateTime.now());
 
-        // zatiaľ bez Security TODO DOROBIT SECURITY
-        log.setUsername("system");
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
 
+        if (authentication != null && authentication.isAuthenticated()) {
+            log.setUsername(authentication.getName());
+        } else {
+            log.setUsername("system");
+        }
 
         auditLogRepository.save(log);
     }
-
     private Task getTask(Long id) {
         return taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task not found"));
     }
