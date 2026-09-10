@@ -53,7 +53,7 @@ public class TaskServiceImpl implements TaskService {
 
         task.setProject(project);
         task.setStatus(TaskStatus.TODO);
-        task.setCreated_at(LocalDateTime.now());
+        task.setCreatedAt(LocalDateTime.now());
         task.setDueDate(LocalDateTime.now().plusDays(7));
 
         Task saved = taskRepository.save(task);

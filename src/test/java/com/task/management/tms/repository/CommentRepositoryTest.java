@@ -31,7 +31,7 @@ public class CommentRepositoryTest {
         task.setDescription("Test description");
         task.setStatus(TaskStatus.TODO);
         task.setPriority(Priority.MEDIUM);
-        task.setCreated_at(LocalDateTime.now());
+        task.setCreatedAt(LocalDateTime.now());
         task.setDueDate(LocalDateTime.now().plusDays(7));
 
         entityManager.persist(task);
@@ -64,7 +64,7 @@ public class CommentRepositoryTest {
         task.setDescription("Test description");
         task.setStatus(TaskStatus.TODO);
         task.setPriority(Priority.MEDIUM);
-        task.setCreated_at(LocalDateTime.now());
+        task.setCreatedAt(LocalDateTime.now());
         task.setDueDate(LocalDateTime.now().plusDays(7));
 
         entityManager.persist(task);

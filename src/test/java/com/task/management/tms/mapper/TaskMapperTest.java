@@ -54,7 +54,7 @@ public class TaskMapperTest {
         task.setDescription("Test description");
         task.setStatus(TaskStatus.IN_PROGRESS);
         task.setPriority(Priority.HIGH);
-        task.setCreated_at(LocalDateTime.now());
+        task.setCreatedAt(LocalDateTime.now());
         task.setDueDate(LocalDateTime.now().plusDays(7));
         task.setAssignedTo(user);
         task.setProject(project);
