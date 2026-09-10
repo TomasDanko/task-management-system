@@ -19,7 +19,6 @@ I created this project as a portfolio project to practice and demonstrate my exp
 * Input validation
 * Global exception handling
 * REST API
-* Swagger / OpenAPI
 * Unit and integration tests
 
 ## Technologies
@@ -35,8 +34,6 @@ I created this project as a portfolio project to practice and demonstrate my exp
 * Maven
 * JUnit
 * Mockito
-* Swagger / OpenAPI
-* Docker
 * Git
 
 ## Project structure
@@ -186,17 +183,6 @@ The application runs by default on:
 ```text
 http://localhost:8080
 ```
-
-## Swagger
-
-After starting the application, Swagger UI is available at:
-
-```text
-http://localhost:8080/swagger-ui/index.html
-```
-
-It can be used to test the REST API directly from the browser.
-
 ## Author
 
 Tomáš Danko
