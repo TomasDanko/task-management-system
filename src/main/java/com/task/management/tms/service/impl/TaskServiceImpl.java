@@ -53,7 +53,7 @@ public class TaskServiceImpl implements TaskService {
 
         task.setProject(project);
         task.setStatus(TaskStatus.TODO);
-        task.setCreatedAt(LocalDateTime.now());
+        task.setCreated_at(LocalDateTime.now());
         task.setDueDate(LocalDateTime.now().plusDays(7));
 
         Task saved = taskRepository.save(task);
@@ -162,7 +162,7 @@ public class TaskServiceImpl implements TaskService {
         log.setIdentityType(identityType);
         log.setIdentityId(identityId);
         log.setAction(action.name());
-        log.setTimestamp(LocalDateTime.now());
+        log.setCreatedAt(LocalDateTime.now());
 
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();

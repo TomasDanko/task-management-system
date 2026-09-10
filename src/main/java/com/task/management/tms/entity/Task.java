@@ -32,8 +32,8 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
-    @Column(name = "createdAt", nullable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime created_at;
 
     @Column(name = "dueDate", nullable = false)
     private LocalDateTime dueDate;
@@ -52,13 +52,13 @@ public class Task {
     public Task() {
     }
 
-    public Task(Long id, String title, String description, TaskStatus status, Priority priority, LocalDateTime createdAt, LocalDateTime dueDate, User assignedTo, Project project, List<Comment> comments) {
+    public Task(Long id, String title, String description, TaskStatus status, Priority priority, LocalDateTime created_at, LocalDateTime dueDate, User assignedTo, Project project, List<Comment> comments) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
         this.priority = priority;
-        this.createdAt = createdAt;
+        this.created_at = created_at;
         this.dueDate = dueDate;
         this.assignedTo = assignedTo;
         this.project = project;
@@ -105,12 +105,12 @@ public class Task {
         this.priority = priority;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getCreated_at() {
+        return created_at;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setCreated_at(LocalDateTime createdAt) {
+        this.created_at = createdAt;
     }
 
     public LocalDateTime getDueDate() {
@@ -150,11 +150,11 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return Objects.equals(id, task.id) && Objects.equals(title, task.title) && Objects.equals(description, task.description) && status == task.status && priority == task.priority && Objects.equals(createdAt, task.createdAt) && Objects.equals(dueDate, task.dueDate) && Objects.equals(assignedTo, task.assignedTo) && Objects.equals(project, task.project) && Objects.equals(comments, task.comments);
+        return Objects.equals(id, task.id) && Objects.equals(title, task.title) && Objects.equals(description, task.description) && status == task.status && priority == task.priority && Objects.equals(created_at, task.created_at) && Objects.equals(dueDate, task.dueDate) && Objects.equals(assignedTo, task.assignedTo) && Objects.equals(project, task.project) && Objects.equals(comments, task.comments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, status, priority, createdAt, dueDate, assignedTo, project, comments);
+        return Objects.hash(id, title, description, status, priority, created_at, dueDate, assignedTo, project, comments);
     }
 }

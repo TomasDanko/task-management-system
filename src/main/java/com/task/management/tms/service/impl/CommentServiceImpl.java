@@ -99,7 +99,7 @@ public class CommentServiceImpl implements CommentService {
         log.setIdentityType(identityType);
         log.setIdentityId(identityId);
         log.setAction(action.name());
-        log.setTimestamp(LocalDateTime.now());
+        log.setCreatedAt(LocalDateTime.now());
 
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();

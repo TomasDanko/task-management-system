@@ -24,14 +24,14 @@ public class AuditLogRepositoryTest {
         log1.setIdentityType("TASK");
         log1.setIdentityId(1L);
         log1.setAction(AuditAction.CREATE.name());
-        log1.setTimestamp(LocalDateTime.now());
+        log1.setCreatedAt(LocalDateTime.now());
         log1.setUsername("system");
 
         AuditLog log2 = new AuditLog();
         log2.setIdentityType("TASK");
         log2.setIdentityId(1L);
         log2.setAction(AuditAction.UPDATE.name());
-        log2.setTimestamp(LocalDateTime.now());
+        log2.setCreatedAt(LocalDateTime.now());
         log2.setUsername("system");
 
         auditLogRepository.save(log1);

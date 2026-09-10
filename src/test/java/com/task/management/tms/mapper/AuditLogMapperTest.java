@@ -24,7 +24,7 @@ public class AuditLogMapperTest {
         log.setIdentityType("TASK");
         log.setIdentityId(10L);
         log.setAction(AuditAction.CREATE.name());
-        log.setTimestamp(timestamp);
+        log.setCreatedAt(timestamp);
         log.setUsername("testuser");
 
         AuditLogResponseDto dto = auditLogMapper.toDto(log);
@@ -34,7 +34,7 @@ public class AuditLogMapperTest {
         assertEquals("TASK", dto.getIdentityType());
         assertEquals(10L, dto.getIdentityId());
         assertEquals(AuditAction.CREATE.name(), dto.getAction());
-        assertEquals(timestamp, dto.getTimestamp());
+        assertEquals(timestamp, dto.getCreated_at());
         assertEquals("testuser", dto.getUsername());
     }
 

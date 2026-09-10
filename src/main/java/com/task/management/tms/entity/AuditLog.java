@@ -23,8 +23,8 @@ public class AuditLog {
     @Column(name = "action", nullable = false, length = 250)
     private String action; //CREATE, UPDATE, DELETE
 
-    @Column(name = "timestamp", nullable = false)
-    private LocalDateTime timestamp;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @Column(name = "username", nullable = false, length = 50)
     private String username;
@@ -32,12 +32,12 @@ public class AuditLog {
     public AuditLog() {
     }
 
-    public AuditLog(Long id, String identityType, Long identityId, String action, LocalDateTime timestamp, String username) {
+    public AuditLog(Long id, String identityType, Long identityId, String action, LocalDateTime createdAt, String username) {
         this.id = id;
         this.identityType = identityType;
         this.identityId = identityId;
         this.action = action;
-        this.timestamp = timestamp;
+        this.createdAt = createdAt;
         this.username = username;
     }
 
@@ -73,12 +73,12 @@ public class AuditLog {
         this.action = action;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    public void setCreatedAt(LocalDateTime timestamp) {
+        this.createdAt = timestamp;
     }
 
     public String getUsername() {
@@ -94,11 +94,11 @@ public class AuditLog {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AuditLog auditLog = (AuditLog) o;
-        return Objects.equals(id, auditLog.id) && Objects.equals(identityType, auditLog.identityType) && Objects.equals(identityId, auditLog.identityId) && Objects.equals(action, auditLog.action) && Objects.equals(timestamp, auditLog.timestamp) && Objects.equals(username, auditLog.username);
+        return Objects.equals(id, auditLog.id) && Objects.equals(identityType, auditLog.identityType) && Objects.equals(identityId, auditLog.identityId) && Objects.equals(action, auditLog.action) && Objects.equals(createdAt, auditLog.createdAt) && Objects.equals(username, auditLog.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, identityType, identityId, action, timestamp, username);
+        return Objects.hash(id, identityType, identityId, action, createdAt, username);
     }
 }
