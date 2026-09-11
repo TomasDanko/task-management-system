@@ -34,7 +34,7 @@ public class AuditLogMapperTest {
         assertEquals("TASK", dto.getIdentityType());
         assertEquals(10L, dto.getIdentityId());
         assertEquals(AuditAction.CREATE.name(), dto.getAction());
-        assertEquals(timestamp, dto.getCreated_at());
+        assertEquals(timestamp, dto.getCreatedAt());
         assertEquals("testuser", dto.getUsername());
     }
 

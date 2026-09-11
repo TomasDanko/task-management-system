@@ -12,7 +12,7 @@ public class AuditLogResponseDto {
 
     private String action;
 
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     private String username;
 
@@ -20,13 +20,13 @@ public class AuditLogResponseDto {
     }
 
     public AuditLogResponseDto(Long id, String identityType, Long identityId,
-                               String action, LocalDateTime created_at,
+                               String action, LocalDateTime createdAt,
                                String username) {
         this.id = id;
         this.identityType = identityType;
         this.identityId = identityId;
         this.action = action;
-        this.created_at = created_at;
+        this.createdAt = createdAt;
         this.username = username;
     }
 
@@ -62,12 +62,12 @@ public class AuditLogResponseDto {
         this.action = action;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getUsername() {

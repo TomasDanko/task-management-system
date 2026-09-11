@@ -14,6 +14,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -159,6 +162,54 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$.projectId").value(5));
 
         verify(taskService).getTaskById(25L);
+    }
+
+    @Test
+    void getAllTasks_shouldReturnFilteredAndPagedTasks() throws Exception {
+
+        TaskResponseDto task1 = new TaskResponseDto();
+        task1.setId(1L);
+        task1.setTitle("Task 1");
+        task1.setStatus(TaskStatus.IN_PROGRESS);
+        task1.setPriority(Priority.HIGH);
+
+        TaskResponseDto task2 = new TaskResponseDto();
+        task2.setId(2L);
+        task2.setTitle("Task 2");
+        task2.setStatus(TaskStatus.IN_PROGRESS);
+        task2.setPriority(Priority.MEDIUM);
+
+        Page<TaskResponseDto> page =
+                new PageImpl<>(List.of(task1, task2));
+
+        when(taskService.getAllTasks(
+                eq(TaskStatus.IN_PROGRESS),
+                eq(1L),
+                eq(2L),
+                any(Pageable.class)
+        )).thenReturn(page);
+
+        mockMvc.perform(get("/api/tasks")
+                        .param("status", "IN_PROGRESS")
+                        .param("projectId", "1")
+                        .param("userId", "2")
+                        .param("page", "0")
+                        .param("size", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].id").value(1))
+                .andExpect(jsonPath("$.content[0].title").value("Task 1"))
+                .andExpect(jsonPath("$.content[0].status").value("IN_PROGRESS"))
+                .andExpect(jsonPath("$.content[1].id").value(2))
+                .andExpect(jsonPath("$.content[1].title").value("Task 2"))
+                .andExpect(jsonPath("$.content[1].status").value("IN_PROGRESS"));
+
+        verify(taskService).getAllTasks(
+                eq(TaskStatus.IN_PROGRESS),
+                eq(1L),
+                eq(2L),
+                any(Pageable.class)
+        );
     }
 
 

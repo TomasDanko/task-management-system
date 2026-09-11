@@ -5,6 +5,9 @@ import com.task.management.tms.dto.TaskResponseDto;
 import com.task.management.tms.enumerator.TaskStatus;
 import com.task.management.tms.service.TaskService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +31,12 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TaskResponseDto>> getAllTasks(){
-        List<TaskResponseDto> tasks = taskService.getAllTasks();
+    public ResponseEntity<Page<TaskResponseDto>> getAllTask(@RequestParam(required = false) TaskStatus status,
+                                                            @RequestParam(required = false) Long projectId,
+                                                            @RequestParam(required = false) Long userId, Pageable pageable) {
+
+        Page<TaskResponseDto> tasks = taskService.getAllTasks(status, projectId, userId, pageable);
+
         return ResponseEntity.ok(tasks);
     }
 

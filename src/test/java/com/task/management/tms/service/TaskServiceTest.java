@@ -23,6 +23,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+
 
 import static org.mockito.ArgumentMatchers.argThat;
 
@@ -31,8 +39,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TaskServiceTest {
@@ -135,6 +142,49 @@ public class TaskServiceTest {
 
         verify(taskRepository).findById(id);
         verify(taskMapper).toDto(task);
+    }
+
+    @Test
+    void getAllTasks_shouldReturnFilteredAndPagedTasks() {
+
+        Pageable pageable = PageRequest.of(0, 2);
+
+        Task task1 = new Task();
+        Task task2 = new Task();
+
+        TaskResponseDto responseDto1 = new TaskResponseDto();
+        TaskResponseDto responseDto2 = new TaskResponseDto();
+
+        Page<Task> taskPage =
+                new PageImpl<>(List.of(task1, task2));
+
+        when(taskRepository.findAll(
+                any(Specification.class),
+                eq(pageable)
+        )).thenReturn(taskPage);
+
+        when(taskMapper.toDto(task1))
+                .thenReturn(responseDto1);
+
+        when(taskMapper.toDto(task2))
+                .thenReturn(responseDto2);
+
+        Page<TaskResponseDto> result =
+                taskService.getAllTasks(
+                        TaskStatus.IN_PROGRESS,
+                        1L,
+                        2L,
+                        pageable
+                );
+
+        assertEquals(2, result.getContent().size());
+        assertEquals(0, result.getNumber());
+        assertEquals(2, result.getSize());
+
+        verify(taskRepository).findAll(
+                any(Specification.class),
+                eq(pageable)
+        );
     }
 
 

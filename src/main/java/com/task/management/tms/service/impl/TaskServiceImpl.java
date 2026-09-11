@@ -18,10 +18,13 @@ import com.task.management.tms.repository.TaskRepository;
 import com.task.management.tms.repository.UserRepository;
 import com.task.management.tms.service.TaskService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -52,9 +55,14 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskMapper.toEntity(dto);
 
         task.setProject(project);
-        task.setStatus(TaskStatus.TODO);
+        task.setStatus(dto.getStatus());
         task.setCreatedAt(LocalDateTime.now());
         task.setDueDate(LocalDateTime.now().plusDays(7));
+
+        if (dto.getAssignedUserId() != null) {
+            User user = getUser(dto.getAssignedUserId());
+            task.setAssignedTo(user);
+        }
 
         Task saved = taskRepository.save(task);
 
@@ -64,12 +72,41 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskResponseDto> getAllTasks() {
-        return taskRepository.findAll()
-                .stream()
-                .map(taskMapper::toDto)
-                .toList();
+    public Page<TaskResponseDto> getAllTasks(TaskStatus status, Long projectId, Long userId, Pageable pageable) {
+
+        Specification<Task> specification = (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
+
+        if (status != null){
+            specification = specification.and(
+                    ((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status"), status))
+            );
+        }
+
+        if (projectId != null) {
+            specification = specification.and(
+                    (root, query, criteriaBuilder) ->
+                            criteriaBuilder.equal(
+                                    root.get("project").get("id"),
+                                    projectId
+                            )
+            );
+        }
+
+        if (userId != null) {
+            specification = specification.and(
+                    (root, query, criteriaBuilder) ->
+                            criteriaBuilder.equal(
+                                    root.get("assignedTo").get("id"),
+                                    userId
+                            )
+            );
+        }
+
+
+        return taskRepository.findAll(specification, pageable)
+                .map(taskMapper::toDto);
     }
+
 
     @Override
     public TaskResponseDto getTaskById(Long id) {
